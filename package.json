@@ -11,7 +11,10 @@
   "dependencies": {
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.6"
+    "next": "15.4.6",
+    "openai": "^4.57.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "typescript": "^5",
