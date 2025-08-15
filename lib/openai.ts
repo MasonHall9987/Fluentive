@@ -98,7 +98,7 @@ ${targetLang} translation: "${translation}"
 For each token below, provide its contextual translation (1-3 words) as it appears in THIS sentence:
 Tokens: ${JSON.stringify(uniqueTerms)}
 
-Return ONLY JSON object mapping token → contextual translation. Example: {"en": "by", "ella": "she"}`;
+Return ONLY JSON object mapping token → contextual translation. Example: {"manzana": "apple"}`;
     const system = `You provide contextual word translations within specific sentences. Translate based on how the word functions in that exact sentence context, not dictionary definitions.`;
     const completion = await getOpenAIClient().chat.completions.create({
         model,
@@ -143,7 +143,7 @@ export async function generateSentences(
 	const model = getChatModel();
 	const sourceLang = direction === "es-to-en" ? "Spanish" : "English";
 	const targetLang = direction === "es-to-en" ? "English" : "Spanish";
-    const prompt = `You are a language learning content generator. Create exactly 3 ${sourceLang} sentences that ${topic ? `are about the topic: "${topic}" and ` : ""}MUST use these grammar topics: ${grammarTopics.join(", ")}. Each sentence should be natural and A2-B1 level. Provide the correct ${targetLang} translation.
+    const prompt = `You are a language learning content generator. Create exactly 1 ${sourceLang} sentence that ${topic ? `is about the topic: "${topic}" and ` : ""}MUST use these grammar topics: ${grammarTopics.join(", ")}. The sentence should be natural and A2-B1 level. Provide the correct ${targetLang} translation.
 
 Also provide 6-10 contextual translations of important terms:
 - Include single content words (verbs, nouns, adjectives, adverbs) as separate entries.
@@ -178,6 +178,7 @@ Return ONLY valid JSON in this schema:
 		],
 		temperature: 0.7,
 		max_tokens: 800,
+		seed: Date.now(),
 	});
 
 	const raw = completion.choices[0]?.message?.content || "";

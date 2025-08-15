@@ -44,7 +44,7 @@ export async function synthesizeToBuffer(text: string, voiceName: string): Promi
 
 export function getDefaultVoiceForLanguage(languageCode: "es" | "en"): string {
 	// Reasonable defaults; can be made configurable later.
-	if (languageCode === "es") return "es-ES-AlvaroNeural";
+	if (languageCode === "es") return "es-CO-SalomeNeural";
 	return "en-US-JennyNeural";
 }
 

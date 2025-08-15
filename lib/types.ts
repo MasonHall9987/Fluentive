@@ -55,6 +55,7 @@ export interface ValidationResponseBody {
 	isCorrect: boolean;
 	message?: string;
 	correctedTranslation?: string;
+	isNatural?: boolean;
 }
 
 

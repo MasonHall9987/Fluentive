@@ -1,216 +1,26 @@
-FLUENTIVE - SPANISH LEARNING WEB APP
-=====================================
+improvements
 
-PROJECT OVERVIEW
------------------
-A React-based web application for learning Spanish through sentence translation exercises. The app uses Microsoft Azure services for speech-to-text (STT), text-to-speech (TTS), and GPT 3.5 Turbo for AI-powered sentence generation and feedback.
 
-CORE FEATURES
--------------
 
-1. SENTENCE TRANSLATION MODE
-   - Primary learning mode focused on contextual sentence understanding
-   - Bidirectional translation (Spanish ↔ English)
-   - Audio-first learning approach with TTS integration
-   - Real-time feedback and correction explanations
+Instead of alternative translation just say natural translation, and still say if their answer is correct but it just could sound more natural.
 
-2. INTELLIGENT BATCHING SYSTEM
-   - Generates 3 sentences per batch
-   - Pre-loads next batch in background after current batch completion
-   - Maximum 3 batches ahead for performance optimization
-   - Alternating direction: 3 Spanish→English, then 3 English→Spanish
+Need better UI.
 
-3. INTERACTIVE LEARNING FLOW
-   - Audio-only initial presentation
-   - Speech-to-text or typing input options
-   - Contextual word/phrase definitions
-   - AI-powered error analysis and explanations
+Play button needs to be fixed i can only replay after making change to text box
 
-TECHNICAL ARCHITECTURE
------------------------
+Switch to pronounciation api and make a ui similair to the screen shot
 
-FRONTEND (React + Next.js)
-- Next.js 14+ with App Router
-- TypeScript for type safety
-- Tailwind CSS for styling
-- React hooks for state management
-- Web Audio API for audio playback controls
-- Web Speech API integration for STT
+need an exit button back to home.
 
-BACKEND SERVICES
-- Microsoft Azure Cognitive Services
-  - Speech-to-Text (Azure Speech Service)
-  - Text-to-Speech (Azure Speech Service)
-- OpenAI GPT 3.5 Turbo API
-- Next.js API routes for service orchestration
+Sentences practiced needs to be per session like counting each sentence practiced until exiting
 
-CORE COMPONENTS
----------------
+Need a time elapsed as well
 
-1. SENTENCE GENERATOR SERVICE
-   - Integrates with GPT 3.5 Turbo
-   - Accepts optional topic and mandatory grammar rules
-   - Returns structured sentence data with metadata
+Make the seed for chat bot the sentence generation the os time.
 
-2. AUDIO PROCESSING SERVICE
-   - Azure TTS integration for sentence audio generation
-   - Audio file caching and management
-   - Playback controls with replay functionality
+Allow for ai follow up questions for explanaition of error
 
-3. SPEECH RECOGNITION SERVICE
-   - Azure STT for voice input processing
-   - Accuracy scoring and validation
-   - Fallback to text input option
+Make the audio sound clearer
 
-4. DEFINITION SERVICE
-   - Context-aware word/phrase definitions
-   - Hover interaction system
-   - Multilingual definition support
+have grammar tags appear in grammar selection bar
 
-5. TRANSLATION VALIDATOR
-   - AI-powered translation accuracy checking
-   - Error analysis and explanation generation
-   - Progress tracking and scoring
-
-USER EXPERIENCE FLOW
----------------------
-
-INITIAL SETUP
-1. User inputs optional topic (e.g., "travel", "food", "family")
-2. User selects mandatory grammar topics (e.g., "present tense", "ser vs estar")
-3. System generates first batch of 3 sentences
-
-SENTENCE LEARNING CYCLE
-It only shows one question/sentence at a time then moves on to the next.
-
-1. AUDIO PHASE
-   - Play sentence audio (TTS generated)
-   - User can replay unlimited times
-   - No visual text displayed
-
-2. TRANSCRIPTION PHASE
-   - User types what they heard OR uses microphone for STT
-   - System validates transcription accuracy
-   - If incorrect: provide feedback and allow retry
-   - If correct: proceed to translation phase
-
-3. TRANSLATION PHASE
-   - Display original sentence with hoverable definitions
-   - User provides translation in target language
-   - System validates translation using AI
-   - If incorrect: AI explains specific errors and provides correct answer
-   - If correct: move to next sentence
-
-4. BATCH COMPLETION
-   - After 3 sentences completed, load next pre-generated batch
-   - Switch direction (Spanish→English becomes English→Spanish)
-   - Continue cycle
-
-API ARCHITECTURE
-----------------
-
-MAIN API ENDPOINT: /api/sentence-batch
-- POST request with topic and grammar requirements
-- Returns structured batch data:
-  ```json
-  {
-    "batchId": "uuid",
-    "direction": "es-to-en" | "en-to-es",
-    "sentences": [
-      {
-        "id": "sentence-uuid",
-        "text": "Spanish sentence text",
-        "translation": "English translation",
-        "audioUrl": "azure-blob-url",
-        "definitions": [
-          {
-            "word": "palabra",
-            "definition": "Context-specific definition",
-            "startIndex": 0,
-            "endIndex": 7
-          }
-        ]
-      }
-    ]
-  }
-  ```
-
-VALIDATION ENDPOINT: /api/validate
-- POST request with user input and expected answer
-- Returns validation result with explanations
-
-AUDIO ENDPOINTS: /api/audio/*
-- TTS generation and caching
-- Audio file serving and management
-
-DATA MODELS
------------
-
-USER PROGRESS
-- Current batch ID
-- Sentence completion status
-- Accuracy metrics
-- Learning streaks
-
-SENTENCE DATA
-- Original text and translation
-- Audio file references
-- Definition mappings
-- Grammar topic tags
-
-BATCH MANAGEMENT
-- Active batch queue
-- Pre-loaded batch cache
-- Direction alternation state
-
-IMPLEMENTATION PHASES
----------------------
-
-PHASE 1: CORE FUNCTIONALITY
-- Basic sentence generation with GPT 3.5
-- Azure TTS integration
-- Simple transcription validation
-- Basic translation checking
-
-PHASE 2: ENHANCED UX
-- Hoverable definitions
-- Audio replay controls
-- Progress tracking
-- Error explanation system
-
-PHASE 3: INTELLIGENT BATCHING
-- Background batch pre-loading
-- Direction alternation
-- Performance optimization
-- Caching strategies
-
-PHASE 4: POLISH & OPTIMIZATION
-- UI/UX refinements
-- Error handling improvements
-- Performance monitoring
-- User feedback integration
-
-SECURITY & PERFORMANCE
------------------------
-
-PERFORMANCE OPTIMIZATIONS
-- Audio file caching and CDN integration
-- Lazy loading for definition data
-- Background API calls for next batches
-- Efficient state management
-
-CACHING STRATEGY
-- Audio files cached in Azure Blob Storage
-- API responses cached with TTL
-- Client-side caching for definitions
-- Batch pre-loading queue management
-
-DEPLOYMENT
-----------
-- Azure services for STT/TTS
-- OpenAI API for GPT integration
-
-ENVIRONMENT CONFIGURATION
-- Development, staging, and production environments
-- Environment-specific API keys and endpoints
-- Configuration management for service endpoints
