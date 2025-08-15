@@ -138,12 +138,6 @@ body {
   margin: 10px;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
 /* Modern input styles */
 .modern-input {
   background: rgba(255, 255, 255, 0.1);
@@ -274,6 +268,27 @@ body {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Selected topic pill in input bar */
+.topic-pill-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: linear-gradient(135deg, var(--light-green) 0%, var(--emerald) 100%);
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.topic-pill-selected:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--mindaro) 100%);
 }
 
 /* Mode selector buttons */
@@ -494,6 +509,7 @@ body {
 /* Modern scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -508,6 +524,33 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, var(--emerald) 0%, var(--light-green) 100%);
+}
+
+/* Tag input specific styling */
+.tag-input-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--keppel) rgba(255, 255, 255, 0.1);
+}
+
+.tag-input-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tag-input-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin: 0 8px;
+  
+}
+
+.tag-input-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--keppel) 0%, var(--emerald) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tag-input-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, var(--emerald) 0%, var(--light-green) 100%);
 }
 
 /* Animations */

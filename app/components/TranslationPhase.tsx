@@ -63,7 +63,7 @@ const TextWithDefinitions = ({ current }: { current: SentenceItem }) => {
               <span className="pointer-events-none absolute z-50 -top-12 left-1/2 -translate-x-1/2 whitespace-pre rounded-lg glass border border-yellow-400/30 text-yellow-100 text-sm px-4 py-3 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 will-change-transform shadow-xl backdrop-blur-md flex items-start gap-2">
                 <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{s.defTitle}</span>
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-white/10 border-r border-b border-yellow-400/30"></div>
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-white/10 border-r border-b border-yellow-400/30 inline-block"></span>
               </span>
             </span>
           );

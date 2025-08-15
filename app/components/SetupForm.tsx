@@ -8,10 +8,12 @@ type Mode = "both" | Direction;
 interface SetupFormProps {
   topic: string;
   selectedGrammarTopics: string[];
+  selectedVerbTypes: string[];
   mode: Mode;
   loading: boolean;
   onTopicChange: (topic: string) => void;
   onGrammarTopicsChange: (topics: string[]) => void;
+  onVerbTypesChange: (verbTypes: string[]) => void;
   onModeChange: (mode: Mode) => void;
   onStart: () => void;
 }
@@ -19,10 +21,12 @@ interface SetupFormProps {
 export const SetupForm = ({
   topic,
   selectedGrammarTopics,
+  selectedVerbTypes,
   mode,
   loading,
   onTopicChange,
   onGrammarTopicsChange,
+  onVerbTypesChange,
   onModeChange,
   onStart
 }: SetupFormProps) => {
@@ -65,15 +69,14 @@ export const SetupForm = ({
                     <GrammarTopicSelector 
               selectedTopics={selectedGrammarTopics}
               onTopicsChange={onGrammarTopicsChange}
+              selectedVerbTypes={selectedVerbTypes}
+              onVerbTypesChange={onVerbTypesChange}
             />
       </div>
       
       {/* Mode Selection */}
-      <div className="space-y-8 pt-6">
-        <label className="block text-lg font-medium text-gray-200 text-center mb-4">
-          Practice Mode
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+      <div className="space-y-8 pt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 m-2">
                   <button
           className={`mode-selector ${
             mode === "both" ? "mode-selector-active" : "mode-selector-inactive"

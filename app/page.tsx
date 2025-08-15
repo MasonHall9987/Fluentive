@@ -23,6 +23,7 @@ export default function Home() {
   // Local state
   const [topic, setTopic] = useState("");
   const [selectedGrammarTopics, setSelectedGrammarTopics] = useState<string[]>([]);
+  const [selectedVerbTypes, setSelectedVerbTypes] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>("both");
   const [direction, setDirection] = useState<Direction>("es-to-en");
   const [phase, setPhase] = useState<Phase>("transcribe");
@@ -138,7 +139,7 @@ export default function Home() {
       <div className="w-full max-w-6xl mx-auto px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16 animate-fade-in">
         {/* Hero Header with Gradient Text */}
         <div className="text-center mb-12 md:mb-16 lg:mb-20">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-[var(--mindaro)] via-[var(--light-green)] to-[var(--emerald)] bg-clip-text text-transparent animate-slide-up">
+          <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold mb-8 bg-gradient-to-r from-[var(--mindaro)] via-[var(--light-green)] to-[var(--emerald)] bg-clip-text text-transparent animate-slide-up">
             Fluentive
           </h1>
       <h1 className="text-xl md:text-xl lg:text-2xl font-bold mb-8 animate-slide-up">
@@ -152,10 +153,12 @@ export default function Home() {
               <SetupForm
                 topic={topic}
                 selectedGrammarTopics={selectedGrammarTopics}
+                selectedVerbTypes={selectedVerbTypes}
                 mode={mode}
                 loading={batchManagement.loading}
                 onTopicChange={setTopic}
                 onGrammarTopicsChange={setSelectedGrammarTopics}
+                onVerbTypesChange={setSelectedVerbTypes}
                 onModeChange={setMode}
                 onStart={handleStart}
               />

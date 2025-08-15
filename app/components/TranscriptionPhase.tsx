@@ -173,7 +173,7 @@ export const TranscriptionPhase = ({
       
       {/* Continue Button */}
       {transcriptionCorrect && (
-        <div className="text-center animate-slide-up pt-4">
+        <div className="text-center animate-slide-up pt-4 flex justify-center">
           <button 
             className="btn-next mx-auto" 
             onClick={onProceedToTranslation}
