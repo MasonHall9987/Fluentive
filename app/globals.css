@@ -421,6 +421,7 @@ body {
   font-size: 18px;
   border: none;
   cursor: pointer;
+  margin: 10px;
 }
 
 .btn-action-primary {
