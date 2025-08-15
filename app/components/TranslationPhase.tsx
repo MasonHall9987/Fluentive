@@ -1,5 +1,6 @@
 "use client";
 import { SentenceItem, Direction, ValidationResponseBody } from '@/lib/types';
+import { Globe, Lightbulb, Volume2, Turtle, CheckCircle, SkipForward, RefreshCw, ArrowRight, Bot, HelpCircle, X, Send, MessageSquare } from 'lucide-react';
 
 interface TranslationPhaseProps {
   current: SentenceItem;
@@ -51,20 +52,24 @@ const TextWithDefinitions = ({ current }: { current: SentenceItem }) => {
   if (cursor < text.length) segments.push({ start: cursor, end: text.length });
   
   return (
-    <p className="text-white text-3xl sm:text-4xl leading-relaxed font-semibold">
-      {segments.map((s, i) => {
-        const slice = text.slice(s.start, s.end);
-        if (!s.defTitle) return <span key={i}>{slice}</span>;
-        return (
-          <span key={i} className="relative inline-block group underline decoration-dotted cursor-help">
-            {slice}
-            <span className="pointer-events-none absolute z-50 -top-9 left-1/2 -translate-x-1/2 whitespace-pre rounded bg-white text-black text-xs px-2 py-1 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition will-change-transform shadow">
-              {s.defTitle}
+    <div className="glass p-6 rounded-xl">
+      <p className="text-white text-2xl md:text-3xl lg:text-4xl leading-relaxed font-medium">
+        {segments.map((s, i) => {
+          const slice = text.slice(s.start, s.end);
+          if (!s.defTitle) return <span key={i}>{slice}</span>;
+          return (
+            <span key={i} className="relative inline-block group underline decoration-dotted decoration-2 decoration-yellow-400/60 cursor-help hover:decoration-yellow-400 transition-all duration-200">
+              {slice}
+              <span className="pointer-events-none absolute z-50 -top-12 left-1/2 -translate-x-1/2 whitespace-pre rounded-lg glass border border-yellow-400/30 text-yellow-100 text-sm px-4 py-3 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 will-change-transform shadow-xl backdrop-blur-md flex items-start gap-2">
+                <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{s.defTitle}</span>
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-white/10 border-r border-b border-yellow-400/30"></div>
+              </span>
             </span>
-          </span>
-        );
-      })}
-    </p>
+          );
+        })}
+      </p>
+    </div>
   );
 };
 
@@ -86,48 +91,93 @@ const TranslationComparison = ({
   onHandleFollowUpQuestion: () => void;
 }) => {
   return (
-    <div className="mt-4 p-4 border rounded bg-gray-900">
-      <div className="space-y-3">
-        <div>
-          <span className="text-sm text-gray-300">Your answer: </span>
-          <span className="text-white">{userTranslation}</span>
+    <div className="glass p-10 md:p-12 animate-slide-up space-y-10">
+      <div className="flex items-center justify-center gap-4">
+        <MessageSquare className="w-8 h-8 text-[var(--keppel)]" />
+        <h4 className="text-2xl md:text-3xl font-semibold text-white">
+          Translation Review
+        </h4>
+      </div>
+      
+      <div className="space-y-8">
+        {/* User's Answer */}
+        <div className="p-8 rounded-xl bg-white/5 border border-white/10">
+          <span className="text-base text-gray-400 uppercase tracking-wide block mb-4">Your Translation</span>
+          <span className="text-white text-2xl">{userTranslation}</span>
         </div>
-        <div>
-          <span className="text-sm text-gray-300">Correct answer: </span>
-          <span className="text-green-400">{current.translation}</span>
+
+        {/* Expected Answer */}
+        <div className="p-8 rounded-xl status-correct border border-green-400/30">
+          <span className="text-base text-green-200 uppercase tracking-wide block mb-4">Expected Translation</span>
+          <span className="text-white text-2xl font-medium">{current.translation}</span>
         </div>
+
+        {/* More Natural Version */}
         {translationResult.correctedTranslation && translationResult.correctedTranslation !== current.translation && (
-          <div>
-            <span className="text-sm text-gray-300">More natural: </span>
-            <span className="text-blue-400">{translationResult.correctedTranslation}</span>
+          <div className="p-8 rounded-xl bg-blue-500/10 border border-blue-400/30">
+            <span className="text-base text-blue-200 uppercase tracking-wide block mb-4">More Natural Version</span>
+            <span className="text-white text-2xl font-medium">{translationResult.correctedTranslation}</span>
           </div>
         )}
+
+        {/* AI Feedback */}
+        {translationResult.message && (
+          <div className="p-8 rounded-xl status-warning border border-yellow-400/30">
+            <div className="flex items-start gap-4">
+              <Lightbulb className="w-7 h-7 text-yellow-400 flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <span className="text-base text-yellow-200 uppercase tracking-wide block mb-4">AI Feedback</span>
+                <span className="text-white text-xl leading-relaxed">{translationResult.message}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
         
-        {/* Follow-up question section */}
-        <div className="mt-4 pt-3 border-t border-gray-700">
-          <div className="text-sm text-gray-300 mb-2">Have a question about this correction?</div>
-          <div className="flex gap-2">
-            <input
-              className="flex-1 border rounded px-2 py-1 text-sm"
-              placeholder="Ask about your mistake..."
-              value={followUpQuestion}
-              onChange={(e) => onFollowUpQuestionChange(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && onHandleFollowUpQuestion()}
-            />
+      {/* Follow-up Question Section */}
+      <div className="space-y-8 pt-8 border-t border-white/10">
+        <div className="flex items-center justify-center gap-4">
+          <HelpCircle className="w-7 h-7 text-[var(--light-green)]" />
+          <h5 className="text-xl font-medium text-white">Ask a Follow-up Question</h5>
+        </div>
+        
+        <div className="space-y-6">
+          <input
+            className="modern-input w-full px-8 py-6 text-lg mx-4"
+            placeholder="Ask about your mistake, grammar rules, or alternative translations..."
+            value={followUpQuestion}
+            onChange={(e) => onFollowUpQuestionChange(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && onHandleFollowUpQuestion()}
+          />
+          <div className="flex justify-center">
             <button 
-              className="border rounded px-3 py-1 text-sm"
+              className={`btn-audio ${
+                followUpQuestion.trim() 
+                  ? "btn-audio-primary" 
+                  : "btn-audio-disabled"
+              }`}
               onClick={onHandleFollowUpQuestion}
               disabled={!followUpQuestion.trim()}
             >
-              Ask
+              <Send className="w-6 h-6" />
+              <span>Ask AI</span>
             </button>
           </div>
-          {followUpResponse && (
-            <div className="mt-2 p-2 bg-gray-800 rounded text-sm text-gray-200">
-              <strong>AI:</strong> {followUpResponse}
-            </div>
-          )}
         </div>
+        
+        {followUpResponse && (
+          <div className="glass p-8 animate-slide-up border border-blue-400/30">
+            <div className="flex items-start gap-5">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Bot className="w-6 h-6 text-blue-300" />
+              </div>
+              <div className="flex-1">
+                <div className="text-base text-blue-200 uppercase tracking-wide mb-4">AI Assistant</div>
+                <div className="text-white text-lg leading-relaxed">{followUpResponse}</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -153,55 +203,110 @@ export const TranslationPhase = ({
   onHandleFollowUpQuestion
 }: TranslationPhaseProps) => {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-gray-300 text-sm">Translate this sentence:</div>
+    <div className="space-y-10 md:space-y-12">
+      {/* Header */}
+      <div className="text-center space-y-6">
+        <div className="flex items-center justify-center gap-4">
+          <Globe className="w-10 h-10 text-[var(--keppel)]" />
+          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+            Translate the Sentence
+          </h3>
+        </div>
+        <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
+          Translate from {direction === "es-to-en" ? "Spanish to English" : "English to Spanish"}
+        </p>
+
+        {/* Audio Controls */}
         {current.audioUrl && (
-          <div className="flex gap-2">
-            <button 
-              className="border rounded px-3 py-1 disabled:opacity-50" 
-              onClick={() => onPlayAudio(1.0)} 
-              disabled={isAudioPlaying}
-            >
-              🔊 Play
-            </button>
-            <button 
-              className="border rounded px-3 py-1 disabled:opacity-50" 
-              onClick={() => onPlayAudio(0.5)} 
-              disabled={isAudioPlaying}
-            >
-              🔊 Slow
-            </button>
+          <div className="flex justify-center pt-6">
+            <div className="flex gap-6 p-6 glass rounded-2xl">
+              <button 
+                className={`btn-audio ${
+                  isAudioPlaying ? "btn-audio-disabled" : "btn-audio-primary"
+                }`}
+                onClick={() => onPlayAudio(1.0)} 
+                disabled={isAudioPlaying}
+              >
+                <Volume2 className="w-6 h-6" />
+                <span>Listen</span>
+              </button>
+              <button 
+                className={`btn-audio ${
+                  isAudioPlaying ? "btn-audio-disabled" : "btn-audio-secondary"
+                }`}
+                onClick={() => onPlayAudio(0.5)} 
+                disabled={isAudioPlaying}
+              >
+                <Turtle className="w-6 h-6" />
+                <span>Slow</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
       
-      <TextWithDefinitions current={current} />
+      {/* Source Sentence with Definitions */}
+      <div className="space-y-6">
+        <h4 className="text-lg font-medium text-gray-200 uppercase tracking-wide text-center">
+          Source Sentence
+        </h4>
+        <TextWithDefinitions current={current} />
+        <p className="text-base text-gray-400 text-center flex items-center justify-center gap-3">
+          <Lightbulb className="w-5 h-5" />
+          <span>Hover over underlined words for definitions</span>
+        </p>
+      </div>
       
-      <input
-        className="w-full border rounded px-3 py-2"
-        placeholder={`Translate to ${direction === "es-to-en" ? "English" : "Spanish"}`}
-        value={userTranslation}
-        onChange={(e) => onTranslationChange(e.target.value)}
-      />
+      {/* Translation Input */}
+      <div className="glass p-10 md:p-12 space-y-8">
+        <label className="block text-lg font-medium text-gray-200 text-center mb-4">
+          Your Translation
+        </label>
+        <input
+          className="modern-input w-full px-8 py-6 text-2xl placeholder:text-gray-400 mx-4"
+          placeholder={`Write your ${direction === "es-to-en" ? "English" : "Spanish"} translation here...`}
+          value={userTranslation}
+          onChange={(e) => onTranslationChange(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && onValidateTranslation()}
+        />
+        <div className="text-right text-base text-gray-400 px-4">
+          {userTranslation.length} characters
+        </div>
+      </div>
       
-      <div className="flex gap-2">
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-6 justify-center">
         <button 
-          className="bg-white text-black rounded px-4 py-2" 
+          className="btn-action btn-action-primary" 
           onClick={onValidateTranslation}
         >
-          Check translation
+          <CheckCircle className="w-6 h-6" />
+          <span>Check Translation</span>
         </button>
         <button 
-          className="border rounded px-3 py-2" 
+          className="btn-action btn-action-secondary" 
           onClick={onSkipTranslation}
         >
-          Skip
+          <SkipForward className="w-6 h-6" />
+          <span>Skip This One</span>
         </button>
       </div>
       
-      {validationMsg && <p className="text-sm text-gray-200">{validationMsg}</p>}
+      {/* Validation Message */}
+      {validationMsg && (
+        <div className={`p-8 rounded-xl border animate-slide-up ${
+          translationResult?.isCorrect 
+            ? 'status-correct border-green-400/30' 
+            : 'status-warning border-yellow-400/30'
+        }`}>
+          <div className="flex items-center gap-4">
+            {translationResult?.isCorrect ? <CheckCircle className="w-7 h-7" /> : <HelpCircle className="w-7 h-7" />}
+            <span className="text-white font-medium text-xl">{validationMsg}</span>
+          </div>
+        </div>
+      )}
       
+      {/* Translation Comparison */}
       {showTranslationCorrection && translationResult && (
         <TranslationComparison 
           current={current}
@@ -214,21 +319,24 @@ export const TranslationPhase = ({
         />
       )}
       
+      {/* Next Actions */}
       {translationResult && (
-        <div className="text-center space-x-3">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-slide-up pt-4">
           {!translationResult.isCorrect && (
             <button 
-              className="border rounded px-4 py-2" 
+              className="btn-action btn-action-warning" 
               onClick={onRetryTranslation}
             >
-              Try again
+              <RefreshCw className="w-6 h-6" />
+              <span>Try Again</span>
             </button>
           )}
           <button 
-            className="bg-green-600 text-white rounded px-6 py-3" 
+            className="btn-next" 
             onClick={onNextSentence}
           >
-            Next sentence →
+            <span>Next Sentence</span>
+            <ArrowRight className="w-7 h-7" />
           </button>
         </div>
       )}

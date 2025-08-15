@@ -1,26 +1,5 @@
 improvements
 
+Need a verb option mode for reflexive, irregular or regular.
 
-
-Instead of alternative translation just say natural translation, and still say if their answer is correct but it just could sound more natural.
-
-Need better UI.
-
-Play button needs to be fixed i can only replay after making change to text box
-
-Switch to pronounciation api and make a ui similair to the screen shot
-
-need an exit button back to home.
-
-Sentences practiced needs to be per session like counting each sentence practiced until exiting
-
-Need a time elapsed as well
-
-Make the seed for chat bot the sentence generation the os time.
-
-Allow for ai follow up questions for explanaition of error
-
-Make the audio sound clearer
-
-have grammar tags appear in grammar selection bar
 

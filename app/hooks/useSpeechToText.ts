@@ -5,9 +5,9 @@ export const useSpeechToText = () => {
   const [sttListening, setSttListening] = useState(false);
   const [userTranscription, setUserTranscription] = useState("");
   const recognizerRef = useRef<any>(null);
-  const transcriptionInputRef = useRef<HTMLDivElement>(null);
+  const transcriptionInputRef = useRef<HTMLDivElement | null>(null);
   const sttListeningRef = useRef<boolean>(false);
-  const setUserTranscriptionRef = useRef<typeof setUserTranscription>();
+  const setUserTranscriptionRef = useRef<typeof setUserTranscription>(setUserTranscription);
 
   // Keep refs in sync with state and setters
   useEffect(() => {

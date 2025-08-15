@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useCallback, useState } from 'react';
+import { Search, X, Plus, Trash2 } from 'lucide-react';
 
 const GRAMMAR_TOPICS = [
   "present tense",
@@ -57,47 +58,106 @@ export const GrammarTopicSelector = ({ selectedTopics, onTopicsChange }: Grammar
   }, [filteredGrammarTopics, selectedTopics, onTopicsChange]);
 
   return (
-    <div>
-      <label className="text-sm text-white mb-2 block">
-        Grammar Topics ({selectedTopics.length} selected)
-      </label>
-      <input
-        className="w-full border rounded px-3 py-2 mb-2"
-        placeholder="Search grammar topics..."
-        value={grammarSearch}
-        onChange={(e) => setGrammarSearch(e.target.value)}
-      />
-      <div className="flex gap-2 mb-2">
-        <button
-          className="text-xs border rounded px-2 py-1 text-white hover:bg-gray-800"
-          onClick={selectAllFilteredTopics}
-          disabled={filteredGrammarTopics.every(topic => selectedTopics.includes(topic))}
-        >
-          Select All Filtered
-        </button>
-        <button
-          className="text-xs border rounded px-2 py-1 text-white hover:bg-gray-800"
-          onClick={clearAllTopics}
-          disabled={selectedTopics.length === 0}
-        >
-          Clear All
-        </button>
-      </div>
-      <div className="max-h-40 overflow-y-auto border rounded p-2 bg-gray-900">
-        {filteredGrammarTopics.map(topic => (
-          <label key={topic} className="flex items-center space-x-2 py-1 cursor-pointer hover:bg-gray-800 rounded px-2">
+    <div className="space-y-8">
+      {/* Search Input + Selected Pills */}
+      <div className="space-y-6">
+        <div className="flex flex-col lg:flex-row gap-4 items-start">
+          {/* Search Input */}
+          <div className="relative flex-1 min-w-0">
             <input
-              type="checkbox"
-              checked={selectedTopics.includes(topic)}
-              onChange={() => toggleGrammarTopic(topic)}
-              className="rounded"
+              className="modern-input w-full pl-16 pr-8 py-6 text-lg mx-4"
+              placeholder="Search grammar topics..."
+              value={grammarSearch}
+              onChange={(e) => setGrammarSearch(e.target.value)}
             />
-            <span className="text-sm text-white">{topic}</span>
-          </label>
-        ))}
-        {filteredGrammarTopics.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-2">No topics match your search</p>
-        )}
+          </div>
+          
+          {/* Selected Topic Pills */}
+          {selectedTopics.length > 0 && (
+            <div className="flex flex-wrap gap-2 px-4 lg:px-0 lg:max-w-md">
+              {selectedTopics.map(topic => (
+                <button
+                  key={topic}
+                  onClick={() => toggleGrammarTopic(topic)}
+                  className="topic-pill status-correct text-white shadow-lg hover:shadow-xl"
+                >
+                  <span>{topic}</span>
+                  <X className="w-5 h-5 opacity-75" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        {/* Action Buttons + Instructions */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4">
+          <div className="flex gap-4">
+            <button
+              className="modern-btn modern-btn-action"
+              onClick={selectAllFilteredTopics}
+              disabled={filteredGrammarTopics.every(topic => selectedTopics.includes(topic))}
+            >
+              <Plus className="w-5 h-5" />
+              <span>Select Filtered</span>
+            </button>
+            <button
+              className="modern-btn modern-btn-danger"
+              onClick={clearAllTopics}
+              disabled={selectedTopics.length === 0}
+            >
+              <Trash2 className="w-5 h-5" />
+              <span>Clear All</span>
+            </button>
+          </div>
+          
+          <div className="flex flex-col items-end text-sm text-gray-400">
+            <span>{selectedTopics.length} of {GRAMMAR_TOPICS.length} selected</span>
+            <span>Select at least one grammar topic to practice</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Available Topics */}
+      <div className="space-y-6">
+        <h4 className="text-base font-medium text-gray-200 uppercase tracking-wide text-center">
+          Available Topics
+        </h4>
+        <div className="max-h-80 overflow-y-auto pr-2">
+          <div className="flex flex-wrap gap-4 justify-center px-4">
+            {filteredGrammarTopics
+              .filter(topic => !selectedTopics.includes(topic))
+              .map(topic => (
+                <button
+                  key={topic}
+                  onClick={() => toggleGrammarTopic(topic)}
+                  className="topic-pill topic-pill-available"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>{topic}</span>
+                </button>
+              ))
+            }
+          </div>
+          
+          {filteredGrammarTopics.filter(topic => !selectedTopics.includes(topic)).length === 0 && (
+            <div className="text-center py-16">
+              {grammarSearch ? (
+                <div className="space-y-6">
+                  <p className="text-gray-400 text-lg">No topics match "{grammarSearch}"</p>
+                  <button
+                    onClick={() => setGrammarSearch("")}
+                    className="modern-btn modern-btn-action mx-auto"
+                  >
+                    <X className="w-5 h-5" />
+                    <span>Clear search</span>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-400 text-lg">All topics selected!</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

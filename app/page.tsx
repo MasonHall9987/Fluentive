@@ -134,75 +134,95 @@ export default function Home() {
   }, [timer, batchManagement]);
 
   return (
-    <div className="min-h-screen p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4 text-white">Fluentive: Sentence Translation</h1>
-
-      {!batchManagement.batch && (
-        <SetupForm
-          topic={topic}
-          selectedGrammarTopics={selectedGrammarTopics}
-          mode={mode}
-          loading={batchManagement.loading}
-          onTopicChange={setTopic}
-          onGrammarTopicsChange={setSelectedGrammarTopics}
-          onModeChange={setMode}
-          onStart={handleStart}
-        />
-      )}
-
-      {batchManagement.batch && current && (
-        <div className="mt-6 space-y-6">
-          <LessonHeader
-            sentencesPracticed={sentencesPracticed}
-            direction={batchManagement.batch.direction}
-            elapsedTime={timer.elapsedTime}
-            onExit={handleExit}
-            audioUrl={current.audioUrl}
-            onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
-            isAudioPlaying={Boolean(audio.isAudioPlaying)}
-          />
-
-          {phase === "transcribe" && current?.audioUrl && (
-            <TranscriptionPhase
-              current={current}
-              userTranscription={stt.userTranscription}
-              sttListening={stt.sttListening}
-              validationMsg={validationMsg}
-              transcriptionCorrect={transcriptionCorrect}
-              showTranscriptionHelp={showTranscriptionHelp}
-              transcriptionInputRef={stt.transcriptionInputRef}
-              onTranscriptionChange={stt.setUserTranscription}
-              onSttToggle={stt.sttToggle}
-              onValidateTranscription={handleValidateTranscription}
-              onSkipTranscription={handleSkipTranscription}
-              onProceedToTranslation={handleProceedToTranslation}
-              direction={direction}
-            />
-          )}
-
-          {phase === "translate" && (
-            <TranslationPhase
-              current={current}
-              userTranslation={translation.userTranslation}
-              validationMsg={translation.validationMsg}
-              translationResult={translation.translationResult}
-              showTranslationCorrection={translation.showTranslationCorrection}
-              followUpQuestion={followUp.followUpQuestion}
-              followUpResponse={followUp.followUpResponse}
-              direction={direction}
-              onTranslationChange={translation.setUserTranslation}
-              onValidateTranslation={handleValidateTranslation}
-              onSkipTranslation={handleSkipTranslation}
-              onNextSentence={handleNextSentence}
-              onRetryTranslation={translation.retryTranslation}
-              onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
-              isAudioPlaying={Boolean(audio.isAudioPlaying)}
-              onFollowUpQuestionChange={followUp.setFollowUpQuestion}
-              onHandleFollowUpQuestion={handleFollowUpQuestion}
-            />
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="w-full max-w-6xl mx-auto px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16 animate-fade-in">
+        {/* Hero Header with Gradient Text */}
+        <div className="text-center mb-12 md:mb-16 lg:mb-20">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-[var(--mindaro)] via-[var(--light-green)] to-[var(--emerald)] bg-clip-text text-transparent animate-slide-up">
+            Fluentive
+          </h1>
+      <h1 className="text-xl md:text-xl lg:text-2xl font-bold mb-8 animate-slide-up">
+            Master languages through immersive translation exercises
+          </h1>
         </div>
-      )}
+
+        {!batchManagement.batch && (
+          <div className="flex justify-center">
+            <div className="card p-12 md:p-16 lg:p-20 animate-slide-up w-full max-w-4xl mx-auto" style={{ animationDelay: '0.4s' }}>
+              <SetupForm
+                topic={topic}
+                selectedGrammarTopics={selectedGrammarTopics}
+                mode={mode}
+                loading={batchManagement.loading}
+                onTopicChange={setTopic}
+                onGrammarTopicsChange={setSelectedGrammarTopics}
+                onModeChange={setMode}
+                onStart={handleStart}
+              />
+            </div>
+          </div>
+        )}
+
+        {batchManagement.batch && current && (
+          <div className="space-y-8 md:space-y-10 lg:space-y-12 flex flex-col items-center">
+            <div className="card p-10 md:p-12 lg:p-14 animate-slide-up w-full max-w-5xl">
+              <LessonHeader
+                sentencesPracticed={sentencesPracticed}
+                direction={batchManagement.batch.direction}
+                elapsedTime={timer.elapsedTime}
+                onExit={handleExit}
+                audioUrl={current.audioUrl}
+                onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
+                isAudioPlaying={Boolean(audio.isAudioPlaying)}
+              />
+            </div>
+
+            {phase === "transcribe" && current?.audioUrl && (
+              <div className="card p-10 md:p-12 lg:p-16 animate-slide-up w-full max-w-5xl">
+                <TranscriptionPhase
+                  current={current}
+                  userTranscription={stt.userTranscription}
+                  sttListening={stt.sttListening}
+                  validationMsg={validationMsg}
+                  transcriptionCorrect={transcriptionCorrect}
+                  showTranscriptionHelp={showTranscriptionHelp}
+                  transcriptionInputRef={stt.transcriptionInputRef}
+                  onTranscriptionChange={stt.setUserTranscription}
+                  onSttToggle={() => stt.sttToggle(direction)}
+                  onValidateTranscription={handleValidateTranscription}
+                  onSkipTranscription={handleSkipTranscription}
+                  onProceedToTranslation={handleProceedToTranslation}
+                  direction={direction}
+                />
+              </div>
+            )}
+
+            {phase === "translate" && (
+              <div className="card p-10 md:p-12 lg:p-16 animate-slide-up w-full max-w-5xl">
+                <TranslationPhase
+                  current={current}
+                  userTranslation={translation.userTranslation}
+                  validationMsg={translation.validationMsg}
+                  translationResult={translation.translationResult}
+                  showTranslationCorrection={translation.showTranslationCorrection}
+                  followUpQuestion={followUp.followUpQuestion}
+                  followUpResponse={followUp.followUpResponse}
+                  direction={direction}
+                  onTranslationChange={translation.setUserTranslation}
+                  onValidateTranslation={handleValidateTranslation}
+                  onSkipTranslation={handleSkipTranslation}
+                  onNextSentence={handleNextSentence}
+                  onRetryTranslation={translation.retryTranslation}
+                  onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
+                  isAudioPlaying={Boolean(audio.isAudioPlaying)}
+                  onFollowUpQuestionChange={followUp.setFollowUpQuestion}
+                  onHandleFollowUpQuestion={handleFollowUpQuestion}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
