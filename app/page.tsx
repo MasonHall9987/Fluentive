@@ -1,7 +1,15 @@
 "use client";
 import { BookOpen, Mic, Zap, Brain, Settings } from 'lucide-react';
+import sdapi from "sdapi"
+
+
 
 export default function Home() {
+  const test = async () => {
+    const result = await sdapi.translate('chimba')
+    console.log(result)
+  }
+  test()
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
       <div className="w-full max-w-6xl mx-auto px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16 animate-fade-in">

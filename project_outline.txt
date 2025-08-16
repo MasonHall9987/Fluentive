@@ -1,5 +1,0 @@
-improvements
-
-Need a verb option mode for reflexive, irregular or regular.
-
-
