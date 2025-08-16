@@ -1,230 +1,159 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import { Direction } from "@/lib/types";
-
-// Hooks
-import { useTimer } from "./hooks/useTimer";
-import { useSpeechToText } from "./hooks/useSpeechToText";
-import { useAudioPlayback } from "./hooks/useAudioPlayback";
-import { useBatchManagement } from "./hooks/useBatchManagement";
-import { useTranslationValidation } from "./hooks/useTranslationValidation";
-import { useFollowUpQuestions } from "./hooks/useFollowUpQuestions";
-
-// Components
-import { SetupForm } from "./components/SetupForm";
-import { LessonHeader } from "./components/LessonHeader";
-import { TranscriptionPhase } from "./components/TranscriptionPhase";
-import { TranslationPhase } from "./components/TranslationPhase";
-
-type Phase = "audio" | "transcribe" | "translate";
-type Mode = "both" | Direction;
+import { BookOpen, Mic, Zap, Brain, Settings } from 'lucide-react';
 
 export default function Home() {
-  // Local state
-  const [topic, setTopic] = useState("");
-  const [selectedGrammarTopics, setSelectedGrammarTopics] = useState<string[]>([]);
-  const [selectedVerbTypes, setSelectedVerbTypes] = useState<string[]>([]);
-  const [mode, setMode] = useState<Mode>("both");
-  const [direction, setDirection] = useState<Direction>("es-to-en");
-  const [phase, setPhase] = useState<Phase>("transcribe");
-  const [sentencesPracticed, setSentencesPracticed] = useState(0);
-  const [transcriptionCorrect, setTranscriptionCorrect] = useState(false);
-  const [showTranscriptionHelp, setShowTranscriptionHelp] = useState(false);
-  const [validationMsg, setValidationMsg] = useState<string | null>(null);
-
-  // Custom hooks
-  const timer = useTimer();
-  const stt = useSpeechToText();
-  const audio = useAudioPlayback();
-  const batchManagement = useBatchManagement();
-  const translation = useTranslationValidation();
-  const followUp = useFollowUpQuestions();
-
-  // Get current sentence
-  const current = batchManagement.getCurrentSentence();
-
-  // Reset states when changing sentences
-  useEffect(() => {
-    if (current) {
-      console.log("Resetting states for new sentence:", current.id);
-      setPhase(batchManagement.batch?.direction === "es-to-en" ? "transcribe" : "translate");
-      stt.resetTranscription();
-      translation.resetTranslation();
-      followUp.resetFollowUp();
-      setTranscriptionCorrect(false);
-      setShowTranscriptionHelp(false);
-      setValidationMsg(null);
-      stt.stopStt();
-    }
-  }, [current, batchManagement.batch?.direction]); // Remove hook dependencies to prevent infinite loops
-
-  // Event handlers
-  const handleStart = useCallback(async () => {
-    await batchManagement.requestBatch(topic, selectedGrammarTopics, direction, timer.startTimer);
-  }, [batchManagement, topic, selectedGrammarTopics, direction, timer]);
-
-  // Transcription handlers
-  const handleValidateTranscription = useCallback(async () => {
-    if (!current) return;
-    const res = await fetch("/api/validate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "transcription", expectedText: current.text, userText: stt.userTranscription }),
-    });
-    const data = await res.json();
-    setTranscriptionCorrect(data.isCorrect);
-    if (data.isCorrect) {
-      setValidationMsg("Correct! Now translate the sentence.");
-      setShowTranscriptionHelp(false);
-    } else {
-      setValidationMsg("Not quite right. Check the highlighted differences below.");
-      setShowTranscriptionHelp(true);
-    }
-  }, [current, stt.userTranscription]);
-
-  const handleSkipTranscription = useCallback(() => {
-    setTranscriptionCorrect(true);
-    setValidationMsg("Skipped transcription. Here's the correct text:");
-    setShowTranscriptionHelp(true);
-    const correctText = current?.text || "";
-    stt.setUserTranscription(correctText);
-    if (stt.transcriptionInputRef.current) {
-      stt.transcriptionInputRef.current.textContent = correctText;
-    }
-  }, [current, stt]);
-
-  const handleProceedToTranslation = useCallback(() => {
-    setPhase("translate");
-  }, []);
-
-  // Translation handlers  
-  const handleValidateTranslation = useCallback(async () => {
-    if (!current) return;
-    await translation.validateTranslation(
-      current.text,
-      current.translation,
-      direction,
-      () => setSentencesPracticed(prev => prev + 1)
-    );
-  }, [current, direction, translation]);
-
-  const handleSkipTranslation = useCallback(() => {
-    if (!current) return;
-    translation.skipTranslation(current.translation, () => setSentencesPracticed(prev => prev + 1));
-  }, [current, translation]);
-
-  const handleNextSentence = useCallback(() => {
-    batchManagement.nextSentence(mode, topic, selectedGrammarTopics, setDirection);
-  }, [batchManagement, mode, topic, selectedGrammarTopics]);
-
-  const handleFollowUpQuestion = useCallback(async () => {
-    if (!current || !translation.translationResult) return;
-    await followUp.handleFollowUpQuestion(
-      current.text,
-      current.translation,
-      translation.userTranslation,
-      translation.translationResult.message || '',
-      direction
-    );
-  }, [current, translation, followUp, direction]);
-
-  const handleExit = useCallback(() => {
-    timer.resetTimer();
-    batchManagement.resetBatch();
-    setSentencesPracticed(0);
-  }, [timer, batchManagement]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
       <div className="w-full max-w-6xl mx-auto px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16 animate-fade-in">
-        {/* Hero Header with Gradient Text */}
-        <div className="text-center mb-12 md:mb-16 lg:mb-20">
-          <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold mb-8 bg-gradient-to-r from-[var(--mindaro)] via-[var(--light-green)] to-[var(--emerald)] bg-clip-text text-transparent animate-slide-up">
+        {/* Hero Header */}
+        <div className="text-center mb-16 md:mb-20 lg:mb-24">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-[var(--mindaro)] via-[var(--light-green)] to-[var(--emerald)] bg-clip-text text-transparent animate-slide-up">
             Fluentive
           </h1>
-      <h1 className="text-xl md:text-xl lg:text-2xl font-bold mb-8 animate-slide-up">
-            Master languages through immersive translation exercises
-          </h1>
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-gray-300 mb-6 animate-slide-up">
+            Master languages through immersive exercises
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto animate-slide-up">
+            Choose your learning path and dive into interactive language practice
+          </p>
         </div>
 
-        {!batchManagement.batch && (
-          <div className="flex justify-center">
-            <div className="card p-12 md:p-16 lg:p-20 animate-slide-up w-full max-w-4xl mx-auto" style={{ animationDelay: '0.4s' }}>
-              <SetupForm
-                topic={topic}
-                selectedGrammarTopics={selectedGrammarTopics}
-                selectedVerbTypes={selectedVerbTypes}
-                mode={mode}
-                loading={batchManagement.loading}
-                onTopicChange={setTopic}
-                onGrammarTopicsChange={setSelectedGrammarTopics}
-                onVerbTypesChange={setSelectedVerbTypes}
-                onModeChange={setMode}
-                onStart={handleStart}
-              />
-            </div>
-          </div>
-        )}
-
-        {batchManagement.batch && current && (
-          <div className="space-y-8 md:space-y-10 lg:space-y-12 flex flex-col items-center">
-            <div className="card p-10 md:p-12 lg:p-14 animate-slide-up w-full max-w-5xl">
-              <LessonHeader
-                sentencesPracticed={sentencesPracticed}
-                direction={batchManagement.batch.direction}
-                elapsedTime={timer.elapsedTime}
-                onExit={handleExit}
-                audioUrl={current.audioUrl}
-                onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
-                isAudioPlaying={Boolean(audio.isAudioPlaying)}
-              />
-            </div>
-
-            {phase === "transcribe" && current?.audioUrl && (
-              <div className="card p-10 md:p-12 lg:p-16 animate-slide-up w-full max-w-5xl">
-                <TranscriptionPhase
-                  current={current}
-                  userTranscription={stt.userTranscription}
-                  sttListening={stt.sttListening}
-                  validationMsg={validationMsg}
-                  transcriptionCorrect={transcriptionCorrect}
-                  showTranscriptionHelp={showTranscriptionHelp}
-                  transcriptionInputRef={stt.transcriptionInputRef}
-                  onTranscriptionChange={stt.setUserTranscription}
-                  onSttToggle={() => stt.sttToggle(direction)}
-                  onValidateTranscription={handleValidateTranscription}
-                  onSkipTranscription={handleSkipTranscription}
-                  onProceedToTranslation={handleProceedToTranslation}
-                  direction={direction}
-                />
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          
+          {/* Translation Mode */}
+          <a href="/translation" className="group">
+            <div className="card p-8 md:p-10 lg:p-12 h-full hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[var(--mindaro)] to-[var(--emerald)] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <BookOpen className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Translation Mode</h3>
+                  <p className="text-gray-300 text-base leading-relaxed">
+                    Practice listening, transcription, and translation with AI-generated sentences
+                  </p>
+                </div>
+                <div className="pt-4">
+                  <span className="inline-flex items-center gap-2 text-[var(--mindaro)] font-medium group-hover:gap-3 transition-all duration-300">
+                    Start Learning
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
               </div>
-            )}
+            </div>
+          </a>
 
-            {phase === "translate" && (
-              <div className="card p-10 md:p-12 lg:p-16 animate-slide-up w-full max-w-5xl">
-                <TranslationPhase
-                  current={current}
-                  userTranslation={translation.userTranslation}
-                  validationMsg={translation.validationMsg}
-                  translationResult={translation.translationResult}
-                  showTranslationCorrection={translation.showTranslationCorrection}
-                  followUpQuestion={followUp.followUpQuestion}
-                  followUpResponse={followUp.followUpResponse}
-                  direction={direction}
-                  onTranslationChange={translation.setUserTranslation}
-                  onValidateTranslation={handleValidateTranslation}
-                  onSkipTranslation={handleSkipTranslation}
-                  onNextSentence={handleNextSentence}
-                  onRetryTranslation={translation.retryTranslation}
-                  onPlayAudio={(rate) => audio.playAudio(current.audioUrl!, rate)}
-                  isAudioPlaying={Boolean(audio.isAudioPlaying)}
-                  onFollowUpQuestionChange={followUp.setFollowUpQuestion}
-                  onHandleFollowUpQuestion={handleFollowUpQuestion}
-                />
+          {/* Live Simulation Mode */}
+          <a href="/live-simulation" className="group">
+            <div className="card p-8 md:p-10 lg:p-12 h-full hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[var(--bondi-blue)] to-[var(--lapis-lazuli)] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Mic className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Live Simulation</h3>
+                  <p className="text-gray-300 text-base leading-relaxed">
+                    Real-time conversation practice with AI partners and pronunciation feedback
+                  </p>
+                </div>
+                <div className="pt-4">
+                  <span className="inline-flex items-center gap-2 text-[var(--bondi-blue)] font-medium group-hover:gap-3 transition-all duration-300">
+                    Start Speaking
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          </a>
+
+          {/* Verb Conjugation Mode */}
+          <a href="/verb-conjugation" className="group">
+            <div className="card p-8 md:p-10 lg:p-12 h-full hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[var(--verdigris)] to-[var(--keppel)] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Zap className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Verb Conjugation</h3>
+                  <p className="text-gray-300 text-base leading-relaxed">
+                    Master verb forms across tenses, moods, and irregular patterns
+                  </p>
+                </div>
+                <div className="pt-4">
+                  <span className="inline-flex items-center gap-2 text-[var(--verdigris)] font-medium group-hover:gap-3 transition-all duration-300">
+                    Practice Verbs
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Vocabulary Mode */}
+          <a href="/vocab" className="group">
+            <div className="card p-8 md:p-10 lg:p-12 h-full hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[var(--indigo-dye)] to-[var(--cerulean)] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Brain className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Vocabulary</h3>
+                  <p className="text-gray-300 text-base leading-relaxed">
+                    Build and manage your word lists with spaced repetition learning
+                  </p>
+                </div>
+                <div className="pt-4">
+                  <span className="inline-flex items-center gap-2 text-[var(--indigo-dye)] font-medium group-hover:gap-3 transition-all duration-300">
+                    Manage Words
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Settings */}
+          <a href="/settings" className="group">
+            <div className="card p-8 md:p-10 lg:p-12 h-full hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Settings className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Settings</h3>
+                  <p className="text-gray-300 text-base leading-relaxed">
+                    Configure your learning preferences and manage account settings
+                  </p>
+                </div>
+                <div className="pt-4">
+                  <span className="inline-flex items-center gap-2 text-gray-400 font-medium group-hover:gap-3 transition-all duration-300">
+                    Configure
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+        </div>
+
+        {/* Footer Info */}
+        <div className="text-center mt-16 md:mt-20 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <p className="text-gray-400 text-sm">
+            Choose a mode to begin your language learning journey
+          </p>
+        </div>
       </div>
     </div>
   );
