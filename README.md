@@ -177,14 +177,6 @@ AZURE_OPENAI_API_VERSION=2024-02-15-preview  # optional
 - **Caching Duration**: Adjust TTL in `inMemoryStore.ts` (default: 10 minutes)
 - **AI Models**: Configure in `openaiClient.ts`
 
-## Performance Optimizations
-
-- **Background Generation**: Next sentences pre-loaded
-- **Audio Caching**: In-memory storage with TTL cleanup
-- **Component Optimization**: `useCallback`, `useMemo` for re-render prevention
-- **Lazy Loading**: Dynamic imports for heavy components
-- **Stale Closure Prevention**: `useRef` for async callback reliability
-
 ## Common Development Tasks
 
 ### Adding New Grammar Topics
