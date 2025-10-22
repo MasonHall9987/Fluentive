@@ -17,7 +17,7 @@ function getSpeechConfig(): sdk.SpeechConfig {
 	
 	// Optimize for clarity
 	config.speechSynthesisLanguage = "es-CO";
-	config.speechSynthesisSpeakingRate = 0.9;  // Slightly slower for clarity
+	config.speechSynthesisSpeakingRate = 0.5;  // Slightly slower for clarity
 	config.speechSynthesisPitch = 1.0;         // Natural pitch
 	
 	return config;

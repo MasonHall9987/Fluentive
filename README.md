@@ -51,7 +51,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Backend API Reference
 
-### 🎯 Core Endpoints
+### Core Endpoints
 
 #### `POST /api/sentence-batch`
 **Purpose**: Generate a new batch of sentences with audio
@@ -81,18 +81,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - **Context**: Maintains sentence, translation, and error context for deeper explanations
 - **File**: `app/api/followup/route.ts`
 
-## 🗂️ File Structure & Developer Guide
+## File Structure & Developer Guide
 
 ### Where to Make Changes
 
-#### **🎨 UI Components** (`app/components/`)
+#### **UI Components** (`app/components/`)
 - `GrammarTopicSelector.tsx` - Topic selection with search and verb types
 - `LessonHeader.tsx` - Stats dashboard, timer, audio controls, exit button
 - `TranscriptionPhase.tsx` - Speech-to-text exercise interface
 - `TranslationPhase.tsx` - Translation input with AI feedback and follow-up Q&A
 - `SetupForm.tsx` - Initial lesson configuration (topic, grammar, mode)
 
-#### **⚡ Custom Hooks** (`app/hooks/`)
+#### **Custom Hooks** (`app/hooks/`)
 - `useBatchManagement.ts` - Sentence fetching, background loading, navigation
 - `useSpeechToText.ts` - Azure Speech SDK integration, microphone management
 - `useAudioPlayback.ts` - Audio player with rate control
@@ -100,7 +100,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - `useFollowUpQuestions.ts` - Follow-up Q&A state management
 - `useTimer.ts` - Session timing
 
-#### **🧠 Core Logic** (`lib/`)
+#### **Core Logic** (`lib/`)
 - `openai.ts` - **Sentence generation, seeding (`Date.now()`), definition mapping**
 - `azureTTS.ts` - **Text-to-speech synthesis with voice selection**
 - `openaiClient.ts` - **OpenAI client configuration and model selection**
@@ -108,12 +108,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - `types.ts` - **TypeScript interfaces and type definitions**
 - `batching.ts` - **Batch processing utilities**
 
-#### **🎨 Styling** (`app/globals.css`)
+#### ** Styling** (`app/globals.css`)
 - **Custom color palette**: Mindaro, light green, emerald gradients
 - **Component classes**: Button variants, cards, glass morphism effects
 - **Animations**: Fade-in, slide-up, recording pulse effects
 
-### 🔧 Key Integration Points
+### Key Integration Points
 
 #### **OpenAI Configuration**
 ```typescript
@@ -134,7 +134,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 // app/hooks/* - Isolated business logic
 ```
 
-## 🔄 Data Flow
+## Data Flow
 
 ### Lesson Flow
 1. **Setup** → User selects topic, grammar, mode
@@ -151,7 +151,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - **Caching**: Audio stored in memory with 10-minute TTL
 - **Smart Loading**: Queued batches for instant transitions
 
-## 🎛️ Configuration
+## Configuration
 
 ### Environment Variables
 ```bash
@@ -177,7 +177,7 @@ AZURE_OPENAI_API_VERSION=2024-02-15-preview  # optional
 - **Caching Duration**: Adjust TTL in `inMemoryStore.ts` (default: 10 minutes)
 - **AI Models**: Configure in `openaiClient.ts`
 
-## 🚀 Performance Optimizations
+## Performance Optimizations
 
 - **Background Generation**: Next sentences pre-loaded
 - **Audio Caching**: In-memory storage with TTL cleanup
@@ -185,7 +185,7 @@ AZURE_OPENAI_API_VERSION=2024-02-15-preview  # optional
 - **Lazy Loading**: Dynamic imports for heavy components
 - **Stale Closure Prevention**: `useRef` for async callback reliability
 
-## 🎯 Common Development Tasks
+## Common Development Tasks
 
 ### Adding New Grammar Topics
 1. Edit `GRAMMAR_TOPICS` in `app/components/GrammarTopicSelector.tsx`
